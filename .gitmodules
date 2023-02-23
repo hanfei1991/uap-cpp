@@ -2,3 +2,9 @@
 	path = uap-core
 	url = https://github.com/ua-parser/uap-core
 	branch = master
+[submodule "third-party/yaml-cpp"]
+	path = third-party/yaml-cpp
+	url = https://github.com/ClickHouse/yaml-cpp.git
+[submodule "third-party/re2"]
+	path = third-party/re2
+	url = https://github.com/google/re2.git

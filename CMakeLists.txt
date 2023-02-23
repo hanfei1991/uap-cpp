@@ -19,16 +19,15 @@ set(LIB_SOURCES
         internal/ReplaceTemplate.cpp
         internal/SnippetIndex.cpp)
 
-find_package(yaml-cpp REQUIRED)
-include_directories(${YAML_CPP_INCLUDE_DIR})
-
-find_package(re2)
+include (third-party/CMakeLists.txt)
 
 # this is the "object library" target: compiles the sources only once
 add_library(objlib OBJECT ${LIB_SOURCES})
+target_link_libraries(objlib PUBLIC yaml_cpp)
+target_link_libraries(objlib PUBLIC re2)
 
 # shared libraries need PIC
-set_property(TARGET objlib PROPERTY POSITION_INDEPENDENT_CODE 1)
+#set_property(TARGET objlib PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 # shared and static libraries built from the same object files
 add_library(uap-cpp-static STATIC $<TARGET_OBJECTS:objlib>)
@@ -39,22 +38,22 @@ set_target_properties(uap-cpp-shared PROPERTIES OUTPUT_NAME uaparser_cpp)
 
 
 
-set(TEST_SOURCES
-        UaParserTest.cpp)
-
-find_package(GTest)
-
-add_executable(tests ${TEST_SOURCES} $<TARGET_OBJECTS:objlib>)
-set_target_properties(tests PROPERTIES OUTPUT_NAME UaParserTest)
-
-target_link_libraries(tests re2 yaml-cpp gtest pthread)
+#set(TEST_SOURCES
+#        UaParserTest.cpp)
+#
+#find_package(GTest)
+#
+#add_executable(tests ${TEST_SOURCES} $<TARGET_OBJECTS:objlib>)
+#set_target_properties(tests PROPERTIES OUTPUT_NAME UaParserTest)
+#
+#target_link_libraries(tests re2 yaml-cpp gtest pthread)
 
 
 
 set(BENCH_SOURCES
         benchmarks/UaParserBench.cpp)
 
-add_executable(bench ${BENCH_SOURCES} $<TARGET_OBJECTS:objlib>)
-set_target_properties(bench PROPERTIES OUTPUT_NAME UaParserBench)
+add_executable(bench ${BENCH_SOURCES})
+#set_target_properties(bench PROPERTIES OUTPUT_NAME UaParserBench)
 
-target_link_libraries(bench re2 yaml-cpp pthread)
+target_link_libraries(bench objlib pthread)
